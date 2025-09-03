@@ -7,7 +7,7 @@ export const getProduct = async (req, res) => {
         return res.status(200).json({ success: true, data: products })
     } catch (error) {
         console.log("Error in fetching products", error.massage);
-        return res.status(500).json({ success: false, message: "Server error" })
+        return res.status(500).json({ success: false, message: "Server Error" })
     }
 };
 
@@ -47,15 +47,15 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     const { id } = req.params;
 
-    try {
-        const deletedProduct = await Product.findByIdAndDelete(id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ success: false, message: "Product id is not valid" });
+    }
 
-        if (!deletedProduct) {
-            return res.status(400).json({ success: false, massage: "Product not found" })
-        }
+    try {
+        await Product.findByIdAndDelete(id);
         return res.status(200).json({ success: true, massage: "Product Deleted sucessfully " })
     } catch (error) {
         console.log('Error in deleting product', error.message);
-        return res.status(500).json({ success: false, message: "This id is not matched" })
+        return res.status(500).json({ success: false, message: "Server Error" })
     }
 };
