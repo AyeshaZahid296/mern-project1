@@ -9,7 +9,15 @@ const app = express();
 
 app.use(express.json());
 
-
+app.get("/api/products", async (req, res) => {
+    try {
+        const products = await Product.find({});
+        return res.status(200).json({ success: true, data: products })
+    } catch (error) {
+        console.log("Error in fetching products", error.massage);
+        return res.status(500).json({ success: false, message: "Server error" })
+    }
+})
 
 app.post("/api/products", async (req, res) => {
     const product = await req.body;
