@@ -9,6 +9,8 @@ const app = express();
 
 app.use(express.json());
 
+
+
 app.post("/api/products", async (req, res) => {
     const product = await req.body;
 
@@ -26,7 +28,21 @@ app.post("/api/products", async (req, res) => {
     }
 });
 
+app.delete("/api/products/:id", async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        const deletedProduct = await Product.findByIdAndDelete(id);
+
+        if (!deletedProduct) {
+            return res.status(400).json({ success: false, massage: "Product not found" })
+        }
+        return res.status(200).json({ success: true, massage: "Product Deleted sucessfully " })
+    } catch (error) {
+        console.log('Error in deleting product', error.message);
+        return res.status(500).json({ success: false, message: "This id is not matched" })
+    }
+})
 
 const PORT = process.env.PORT || 5000;
 
