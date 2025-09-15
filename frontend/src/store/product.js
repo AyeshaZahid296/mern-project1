@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import toast from 'react-hot-toast';
 
 // this is a globel State (hook)
 export const useProductStore = create((set) => ({
@@ -7,7 +8,8 @@ export const useProductStore = create((set) => ({
     createProduct: async (newProduct) => {
 
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
-            return { success: false, message: 'Please fill all fields.' };
+            toast.error("Please fill all fields.");
+            return { success: false };
         }
 
         const res = await fetch('/api/products', {
@@ -19,6 +21,8 @@ export const useProductStore = create((set) => ({
         });
         const data = await res.json();
         set((state) => ({ products: [...state.products, data.data] }));
-        return { success: true, message: 'Product created successfully.' };
+
+        toast.success("Product created successfully.");
+        return { success: true };
     },
 }));
