@@ -9,10 +9,10 @@ const HomePage = () => {
     });
 
     const { createProduct } = useProductStore();
+
     const handleAddProduct = async () => {
-        const { success, message } = await createProduct(newProduct);
-        console.log("Success:", success);
-        console.log("Message:", message);
+        await createProduct(newProduct);
+        const newProduct = ({ name: "", price: "", image: "" });
     };
 
     const id = useId();
