@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { FaStore, FaPlus, FaMoon, FaSun } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const [darkMode, setDarkMode] = useState(() => {
         return localStorage.getItem("theme") === "dark";
     });
+
+    const navigate = useNavigate();
+
+    const handleAddProduct = () => {
+        navigate("/create");
+    };
 
     useEffect(() => {
         if (darkMode) {
@@ -30,7 +37,10 @@ const Navbar = () => {
             {/* Right Side */}
             <div className='flex items-center gap-4'>
                 {/* Plus Icon */}
-                <FaPlus className='text-xl cursore-pointer text-green-600 hover:scale-110 transition' />
+                <FaPlus
+                    onClick={handleAddProduct}
+                    className='text-xl cursore-pointer text-blue-600 hover:scale-110 transition'
+                />
                 {/* Day/Night Toggle */}
                 <button onClick={toggleTheme}
                     className='p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-yellow-400 '>
