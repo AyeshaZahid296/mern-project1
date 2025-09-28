@@ -13,6 +13,10 @@ const Navbar = () => {
         navigate("/create");
     };
 
+    const homePage = () => {
+        navigate("/");
+    }
+
     useEffect(() => {
         if (darkMode) {
             document.documentElement.classList.add('dark');
@@ -30,7 +34,10 @@ const Navbar = () => {
         <div className='flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-900 shadow-md'>
             {/* Left Side */}
             <div className='flex items-center gap-2'>
-                <FaStore className='text-xl text-blue-600 dark:text-yellow-400' />
+                <FaStore
+                    onClick={homePage}
+                    className='text-xl text-blue-600 dark:text-yellow-400'
+                />
                 <p className='text-lg font-semibold text-gray-800 dark:text-white'>Product Store</p>
             </div>
 
