@@ -25,4 +25,15 @@ export const useProductStore = create((set) => ({
         toast.success("Product created successfully.");
         return { success: true };
     },
+    deleteProduct: async (id) => {
+        const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+        if (res.ok) {
+            set((state) => ({
+                products: state.products.filter((p) => p._id !== id),
+            }));
+            toast.success("Product deleted.");
+        } else {
+            toast.error("Failed to delete.");
+        }
+    },
 }));
