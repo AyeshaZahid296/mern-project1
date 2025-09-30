@@ -1,99 +1,48 @@
-import React, { useId, useState } from "react";
-import { useProductStore } from "../store/product";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineShoppingCart, AiOutlinePlusCircle } from "react-icons/ai";
+import { MdOutlineRemoveShoppingCart } from "react-icons/md";
 
 const HomePage = () => {
-    const [newProduct, setNewProduct] = useState({
-        name: "",
-        price: "",
-        image: "",
-    });
+  const navigate = useNavigate();
 
-    const { createProduct } = useProductStore();
+  const handleAddProduct = () => {
+    navigate("/create");
+  };
 
-    const handleAddProduct = async () => {
-        await createProduct(newProduct);
-        const newProduct = ({ name: "", price: "", image: "" });
-    };
+  return (
+    <div className="flex flex-col items-center min-h-screen py-12 px-4 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center transition transform hover:scale-[1.01]">
+        {/* Heading */}
+        <h1 className="flex items-center justify-center gap-2 text-3xl font-extrabold text-gray-800 dark:text-white mb-6">
+          <AiOutlineShoppingCart className="text-blue-600 dark:text-blue-400 text-4xl" />
+          Current Products
+        </h1>
 
-    const id = useId();
-
-    return (
-        <div className="flex flex-col items-center min-h-screen py-10 bg-gray-100 dark:bg-gray-900">
-            <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
-                    Create a New Product
-                </h1>
-
-                {/* Name */}
-                <div className="flex flex-col">
-                    <label
-                        htmlFor={id + "nameId"}
-                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                        Name
-                    </label>
-                    <input
-                        className="input-box"
-                        id={id + "nameId"}
-                        type="text"
-                        placeholder="Enter product name"
-                        value={newProduct.name}
-                        onChange={(e) =>
-                            setNewProduct({ ...newProduct, name: e.target.value })
-                        }
-                    />
-                </div>
-
-                {/* Price */}
-                <div className="flex flex-col">
-                    <label
-                        htmlFor={id + "priceId"}
-                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                        Price
-                    </label>
-                    <input
-                        className="input-box"
-                        id={id + "priceId"}
-                        type="number"
-                        placeholder="Enter price"
-                        value={newProduct.price}
-                        onChange={(e) =>
-                            setNewProduct({ ...newProduct, price: e.target.value })
-                        }
-                    />
-                </div>
-
-                {/* Image */}
-                <div className="flex flex-col">
-                    <label
-                        htmlFor={id + "imageId"}
-                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                        Image URL
-                    </label>
-                    <input
-                        className="input-box"
-                        id={id + "imageId"}
-                        type="text"
-                        placeholder="Paste image URL"
-                        value={newProduct.image}
-                        onChange={(e) =>
-                            setNewProduct({ ...newProduct, image: e.target.value })
-                        }
-                    />
-                </div>
-
-                {/* Button */}
-                <button
-                    onClick={handleAddProduct}
-                    className="w-full mt-4 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-200"
-                >
-                    Add Product
-                </button>
-            </div>
+        {/* Empty State */}
+        <div className="flex flex-col items-center mb-8">
+          <MdOutlineRemoveShoppingCart className="text-red-500 text-6xl mb-3 animate-pulse" />
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
+            No products available yet.
+            <span className="block mt-1">Add your first one below!</span>
+          </p>
         </div>
-    );
+
+        {/* Button */}
+        <button
+          onClick={handleAddProduct}
+          className="w-full px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 
+          hover:from-blue-700 hover:to-indigo-700 
+          text-white font-semibold rounded-xl shadow-lg 
+          flex items-center justify-center gap-2 text-lg 
+          transform transition duration-200 hover:scale-105 active:scale-95"
+        >
+          <AiOutlinePlusCircle size={24} />
+          Add Product
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default HomePage;
