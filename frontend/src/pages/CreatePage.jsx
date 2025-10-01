@@ -1,96 +1,167 @@
 import React, { useId, useState } from "react";
-import { useProductStore } from "../store/product";
+import { useNavigate } from "react-router-dom";
+import { useProductStore } from "../store/product.js";
 
 const CreatePage = () => {
     const [newProduct, setNewProduct] = useState({
         name: "",
         price: "",
-        image: "",
+        image: ""
     });
 
+    const [loading, setLoading] = useState(false);
     const { createProduct } = useProductStore();
-
-    const handleAddProduct = async () => {
-        await createProduct(newProduct);
-        setNewProduct({ name: "", price: "", image: "" });
-    };
-
+    const navigate = useNavigate();
     const id = useId();
 
+    const handleAddProduct = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        const result = await createProduct({
+            ...newProduct,
+            price: parseFloat(newProduct.price) // Convert price to number
+        });
+
+        setLoading(false);
+
+        if (result.success) {
+            setNewProduct({ name: "", price: "", image: "" });
+            navigate('/');
+        }
+    };
+
+    const handleChange = (e) => {
+        setNewProduct({
+            ...newProduct,
+            [e.target.name]: e.target.value
+        });
+    };
+
     return (
-        <div className="flex flex-col items-center min-h-screen py-10 bg-gray-100 dark:bg-gray-900">
-            <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
-                    Create a New Product
-                </h1>
+        <div className="min-h-screen py-8 px-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+            <div className="max-w-2xl mx-auto">
+                <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 border border-gray-100 dark:border-gray-700">
+                    {/* Header */}
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-3">
+                            Create New Product
+                        </h1>
+                        <p className="text-gray-600 dark:text-gray-300">
+                            Add a new product to your inventory
+                        </p>
+                    </div>
 
-                {/* Name */}
-                <div className="flex flex-col">
-                    <label
-                        htmlFor={id + "nameId"}
-                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                        Name
-                    </label>
-                    <input
-                        className="input-box"
-                        id={id + "nameId"}
-                        type="text"
-                        placeholder="Enter product name"
-                        value={newProduct.name}
-                        onChange={(e) =>
-                            setNewProduct({ ...newProduct, name: e.target.value })
-                        }
-                    />
+                    <form onSubmit={handleAddProduct} className="space-y-6">
+                        {/* Name */}
+                        <div>
+                            <label
+                                htmlFor={id + "nameId"}
+                                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                            >
+                                Product Name *
+                            </label>
+                            <input
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl 
+                                    focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+                                    dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                                id={id + "nameId"}
+                                name="name"
+                                type="text"
+                                placeholder="Enter product name"
+                                value={newProduct.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        {/* Image URL */}
+                        <div>
+                            <label
+                                htmlFor={id + "imageId"}
+                                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                            >
+                                Image URL *
+                            </label>
+                            <input
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl 
+                                    focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+                                    dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                                id={id + "imageId"}
+                                name="image"
+                                type="url"
+                                placeholder="https://example.com/image.jpg"
+                                value={newProduct.image}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        {/* Price */}
+                        <div>
+                            <label
+                                htmlFor={id + "priceId"}
+                                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                            >
+                                Price *
+                            </label>
+                            <input
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl 
+                                    focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+                                    dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                                id={id + "priceId"}
+                                name="price"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                placeholder="0.00"
+                                value={newProduct.price}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-4 pt-4">
+                            <button
+                                type="button"
+                                onClick={() => navigate('/')}
+                                className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 
+                                    text-gray-700 dark:text-gray-300 rounded-xl 
+                                    hover:bg-gray-50 dark:hover:bg-gray-700 
+                                    transition-colors font-semibold"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 
+                                    hover:from-blue-700 hover:to-indigo-700 
+                                    text-white rounded-xl font-semibold shadow-lg 
+                                    hover:shadow-xl transform hover:scale-105 
+                                    transition-all duration-200 disabled:opacity-50 
+                                    disabled:cursor-not-allowed disabled:transform-none"
+                            >
+                                {loading ? (
+                                    <div className="flex items-center justify-center gap-2">
+                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        Creating...
+                                    </div>
+                                ) : (
+                                    "Create Product"
+                                )}
+                            </button>
+                        </div>
+
+                        {/* Required Fields Note */}
+                        <div className="text-center">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                * Required fields
+                            </p>
+                        </div>
+                    </form>
                 </div>
-
-                {/* Price */}
-                <div className="flex flex-col">
-                    <label
-                        htmlFor={id + "priceId"}
-                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                        Price
-                    </label>
-                    <input
-                        className="input-box"
-                        id={id + "priceId"}
-                        type="number"
-                        placeholder="Enter price"
-                        value={newProduct.price}
-                        onChange={(e) =>
-                            setNewProduct({ ...newProduct, price: e.target.value })
-                        }
-                    />
-                </div>
-
-                {/* Image */}
-                <div className="flex flex-col">
-                    <label
-                        htmlFor={id + "imageId"}
-                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                        Image URL
-                    </label>
-                    <input
-                        className="input-box"
-                        id={id + "imageId"}
-                        type="text"
-                        placeholder="Paste image URL"
-                        value={newProduct.image}
-                        onChange={(e) =>
-                            setNewProduct({ ...newProduct, image: e.target.value })
-                        }
-                    />
-                </div>
-
-                {/* Button */}
-                <button
-                    onClick={handleAddProduct}
-                    className="w-full mt-4 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-200"
-                >
-                    Add Product
-                </button>
             </div>
         </div>
     );
